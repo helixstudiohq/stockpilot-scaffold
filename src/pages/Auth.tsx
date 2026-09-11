@@ -15,13 +15,30 @@ import {
 } from "@/components/ui/input-otp";
 
 import { useAuth } from "@/hooks/use-auth";
-import logo from "@/assets/logo.svg";
 import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 interface AuthProps {
   redirectAfterAuth?: string;
+}
+
+/** StockPilot brand mark: inventory bars under an ascending demand line. */
+function BrandIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <rect x="5" y="17" width="4.5" height="9" rx="1.2" fill="currentColor" opacity="0.55" />
+      <rect x="12.5" y="13" width="4.5" height="13" rx="1.2" fill="currentColor" opacity="0.75" />
+      <rect x="20" y="9" width="4.5" height="17" rx="1.2" fill="currentColor" />
+      <path
+        d="M6.5 13.5 L13 8.5 L18.5 10.5 L26 4.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 function resolveRedirectAfterAuth(
@@ -118,17 +135,16 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
         <div className="flex items-center justify-center h-full flex-col">
         <Card className="min-w-[350px] pb-0 border shadow-md">
           {step === "signIn" ? (
-            <>
-              <CardHeader className="text-center">
+            <>                <CardHeader className="text-center">
               <div className="flex justify-center">
-                    <img
-                      src={logo}
-                      alt="Lock Icon"
-                      width={64}
-                      height={64}
-                      className="rounded-lg mb-4 mt-4 cursor-pointer"
+                    <button
+                      type="button"
+                      aria-label="StockPilot home"
+                      className="mb-4 mt-4 flex size-16 cursor-pointer items-center justify-center rounded-lg border border-border bg-primary/12 text-primary"
                       onClick={() => navigate("/")}
-                    />
+                    >
+                      <BrandIcon className="size-9" />
+                    </button>
                   </div>
                 <CardTitle className="text-xl">Get Started</CardTitle>
                 <CardDescription>
@@ -278,15 +294,10 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
           )}
 
           <div className="py-4 px-6 text-xs text-center text-muted-foreground bg-muted border-t rounded-b-lg">
-            Secured by{" "}
-            <a
-              href="https://freebuff.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-primary transition-colors"
-            >
-              freebuff.com
-            </a>
+            <span className="font-mono-tight">
+              stock<span className="text-primary">pilot</span>
+            </span>{" "}
+            · secured email sign-in
           </div>
         </Card>
         </div>
