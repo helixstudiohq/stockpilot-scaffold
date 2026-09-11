@@ -37,6 +37,7 @@ import {
   formatNumber,
   formatSignedPercent,
 } from "@/utils/format";
+import { useState } from "react";
 import {
   Activity as ActivityIcon,
   AlertTriangle,
@@ -515,7 +516,7 @@ export default function Dashboard() {
                 </TableHeader>
                 <TableBody>
                   {(dashboard?.lowStock ?? []).map((item) => (
-                    <TableRow key={item.product.id}>
+                    <TableRow key={`${item.storeCode}:${item.product.id}`}>
                       <TableCell className="max-w-[220px] truncate pl-6">
                         <p className="font-medium">{item.product.name}</p>
                         <p className="font-mono-tight text-[11px] text-muted-foreground">

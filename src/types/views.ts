@@ -31,6 +31,7 @@ export interface ProductView {
 
 export interface InventoryItemView {
   product: ProductView;
+  storeCode: string;
   onHand: number;
   reserved: number;
   available: number;

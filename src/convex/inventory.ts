@@ -30,8 +30,9 @@ interface ProductView {
   reorderPoint: number;
 }
 
-interface InventoryItemView {
+interface InventoryItemSummaryView {
   product: ProductView;
+  storeCode: string;
   onHand: number;
   reserved: number;
   available: number;
@@ -59,7 +60,7 @@ interface DashboardPayload {
     };
     counts: HealthCounts;
   };
-  lowStock: InventoryItemView[];
+  lowStock: InventoryItemSummaryView[];
   salesTrend: Array<{ date: string; unitsSold: number; revenue: number }>;
   rangeDays: number;
   revenue: number;
@@ -125,6 +126,7 @@ export const getDashboardSummary = query({
     }
 
     const productById = keyById(products);
+    const storeById = keyById(stores);
     const today = toISODate(new Date());
     const fromDate = isoDaysBefore(new Date(), rangeDays - 1);
     const prevFromDate = isoDaysBefore(new Date(), rangeDays * 2 - 1);
@@ -189,7 +191,7 @@ export const getDashboardSummary = query({
     let unitsOnHand = 0;
     let stockValue = 0;
     const counts = emptyCounts();
-    const lowStock: InventoryItemView[] = [];
+    const lowStock: InventoryItemSummaryView[] = [];
 
     for (const row of scopedInventory) {
       const product = productById.get(row.productId);
@@ -214,7 +216,10 @@ export const getDashboardSummary = query({
       stockValue += row.onHand * (product.unitCost ?? product.unitPrice * 0.55);
 
       if (status === "out" || status === "critical" || status === "low") {
+        const store = storeById.get(row.storeId);
+        if (store === undefined) continue;
         lowStock.push({
+          storeCode: store.code,
           product: {
             id: product._id,
             sku: product.sku,
