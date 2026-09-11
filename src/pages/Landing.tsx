@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import logo from "@/assets/logo.svg";
 
 // ---------------------------------------------------------------------------
 // Live feed data (deterministic sample "events" for the terminal demo)
@@ -215,6 +214,24 @@ function OpsTerminal() {
   );
 }
 
+/** StockPilot brand mark: inventory bars under an ascending demand line. */
+function BrandIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className={className} aria-hidden="true">
+      <rect x="5" y="17" width="4.5" height="9" rx="1.2" fill="currentColor" opacity="0.55" />
+      <rect x="12.5" y="13" width="4.5" height="13" rx="1.2" fill="currentColor" opacity="0.75" />
+      <rect x="20" y="9" width="4.5" height="17" rx="1.2" fill="currentColor" />
+      <path
+        d="M6.5 13.5 L13 8.5 L18.5 10.5 L26 4.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function Landing() {
   const now = useCurrentTime();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -225,8 +242,11 @@ export default function Landing() {
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link to="/" className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-md border border-border bg-card">
-              <img src={logo} alt="StockPilot" className="size-5" />
+            <span
+              className="flex size-8 items-center justify-center rounded-md border border-border bg-primary/12 text-primary"
+              title="StockPilot"
+            >
+              <BrandIcon className="size-5" />
             </span>
             <span className="font-mono-tight text-sm font-semibold tracking-tight">
               stock<span className="text-primary">pilot</span>
@@ -501,8 +521,10 @@ export default function Landing() {
       <footer className="border-t border-border/70 bg-sidebar/60">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:px-6">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="StockPilot" className="size-4" />
-            <span className="font-mono-tight">stockpilot</span>
+            <BrandIcon className="size-4 text-primary" />
+            <span className="font-mono-tight">
+              stock<span className="text-primary">pilot</span>
+            </span>
             <span className="text-border">·</span>
             <span>inventory control room</span>
           </div>

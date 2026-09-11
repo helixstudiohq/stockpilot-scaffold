@@ -1,4 +1,3 @@
-import { LogoDropdown } from "@/components/LogoDropdown";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -120,10 +119,38 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+/** StockPilot brand mark: inventory bars under an ascending demand line. */
+function BrandIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      fill="none"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="5" y="17" width="4.5" height="9" rx="1.2" fill="currentColor" opacity="0.55" />
+      <rect x="12.5" y="13" width="4.5" height="13" rx="1.2" fill="currentColor" opacity="0.75" />
+      <rect x="20" y="9" width="4.5" height="17" rx="1.2" fill="currentColor" />
+      <path
+        d="M6.5 13.5 L13 8.5 L18.5 10.5 L26 4.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function BrandMark() {
   return (
     <div className="flex items-center gap-2.5 px-4 pt-4">
-      <LogoDropdown />
+      <span
+        className="flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-primary/12 text-primary"
+        title="StockPilot"
+      >
+        <BrandIcon className="size-5" />
+      </span>
       <Link to="/dashboard" className="font-mono-tight text-sm font-semibold tracking-tight">
         stock<span className="text-primary">pilot</span>
       </Link>
