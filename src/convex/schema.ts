@@ -79,7 +79,8 @@ const schema = defineSchema(
       revenue: v.number(),
     })
       .index("by_store_date", ["storeId", "date"])
-      .index("by_product", ["productId"]),
+      .index("by_product", ["productId"])
+      .index("by_store_product", ["storeId", "productId"]),
 
     // Persisted reorder recommendations and their approval workflow state.
     reorderRecommendations: defineTable({

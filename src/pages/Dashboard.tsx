@@ -88,6 +88,16 @@ const STATUS_META: Record<
     className: "bg-status-ok/15 text-status-ok border-status-ok/30",
     dot: "bg-status-ok",
   },
+  critical: {
+    label: "Critical",
+    className: "bg-status-out/20 text-status-out border-status-out/40",
+    dot: "bg-status-out",
+  },
+  overstocked: {
+    label: "Overstocked",
+    className: "bg-primary/10 text-primary border-primary/30",
+    dot: "bg-primary",
+  },
 };
 
 function StatusBadge({ status }: { status: StockStatus }) {

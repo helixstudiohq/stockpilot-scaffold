@@ -110,6 +110,10 @@ export interface ReorderRecommendation {
   reason: string;
 }
 
+function round2(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
 function stdDev(values: number[]): number {
   if (values.length < 2) return 0;
   const m = avgDailyDemand(values, values.length);

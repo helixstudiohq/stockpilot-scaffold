@@ -389,6 +389,78 @@ export const getStorePerformance = query({
   },
 });
 
+/**
+ * Flat position list with product/store joins and per-position health —
+ * powers the Inventory page's search/filter/sort/pagination client-side.
+ */
+export const listPositions = query({
+  args: {
+    storeId: v.optional(v.id("stores")),
+  },
+  handler: async (ctx, args) => {
+    const stores = await ctx.db.query("stores").collect();
+    const storeById = keyById(stores);
+    const products = await ctx.db.query("products").collect();
+    const productById = keyById(products);
+    const inventory = args.storeId
+      ? await ctx.db
+          .query("inventory")
+          .withIndex("by_store", (q) => q.eq("storeId", args.storeId!))
+          .collect()
+      : await ctx.db.query("inventory").collect();
+
+    const sales = await ctx.db.query("dailySales").collect();
+    const historyByPosition = new Map<string, number[]>();
+    for (const row of sales) {
+      const key = `${row.storeId}:${row.productId}`;
+      const list = historyByPosition.get(key) ?? [];
+      list.push(row.unitsSold);
+      historyByPosition.set(key, list);
+    }
+
+    const positions = [];
+    for (const row of inventory) {
+      const product = productById.get(row.productId);
+      const store = storeById.get(row.storeId);
+      if (product === undefined || store === undefined) continue;
+
+      const history = historyByPosition.get(`${row.storeId}:${row.productId}`) ?? [];
+      const avgDaily = avgDailyDemand(history, 14);
+      const context = {
+        currentStock: row.onHand,
+        reserved: row.reserved,
+        reorderPoint: product.reorderPoint,
+        safetyStock: row.safetyStock ?? 0,
+        avgDaily,
+      };
+      const status = stockStatus(context);
+      const unitCost = product.unitCost ?? product.unitPrice * 0.55;
+      positions.push({
+        key: `${row.storeId}:${row.productId}`,
+        storeId: row.storeId,
+        storeCode: store.code,
+        storeName: store.name,
+        productId: row.productId,
+        sku: product.sku,
+        name: product.name,
+        category: product.category,
+        unitPrice: product.unitPrice,
+        unitCost: Math.round(unitCost * 100) / 100,
+        reorderPoint: product.reorderPoint,
+        onHand: row.onHand,
+        reserved: row.reserved,
+        available: availableStock(context),
+        avgDailyUnits: avgDaily,
+        daysOfCover: daysOfCover(context),
+        status,
+        stockValue: Math.round(row.onHand * unitCost * 100) / 100,
+        updatedAt: row.updatedAt ?? 0,
+      });
+    }
+    return positions;
+  },
+});
+
 /** Demand drift per product — feeds "rising/declining demand" narratives. */
 export const getDemandSignals = query({
   args: {},
