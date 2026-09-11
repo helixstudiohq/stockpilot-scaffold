@@ -1,4 +1,5 @@
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import type {
   DashboardView,
@@ -8,6 +9,7 @@ import type {
 export type DashboardRange = 7 | 14 | 30;
 
 export interface DashboardQueryArgs {
+  /** Store document id as a plain string, or undefined for the whole chain. */
   storeId?: string;
   rangeDays?: DashboardRange;
 }
@@ -20,7 +22,7 @@ export interface DashboardQueryArgs {
  */
 export function useDashboard(args: DashboardQueryArgs = {}) {
   return useQuery(api.inventory.getDashboardSummary, {
-    storeId: args.storeId,
+    storeId: args.storeId as Id<"stores"> | undefined,
     rangeDays: args.rangeDays,
   });
 }
